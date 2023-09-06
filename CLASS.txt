@@ -1,0 +1,108 @@
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    
+class Juices:
+    
+    
+    def __init__(self, taste, color, left_in_stock, price):
+        self.taste = taste
+        self.color = color
+        self.left_in_stock = left_in_stock
+        self.price = price
+
+        
+        
+    def remove_from_stock(self):
+        amount_sold = input("How much did you sell? ")
+        self.left_in_stock = self.left_in_stock  - int(amount_sold)
+        
+        if self.left_in_stock <= 0:
+            self.left_in_stock = 0
+            print(bcolors.FAIL + f"Removed {amount_sold} from stock. The stock is empty" + bcolors.ENDC)
+            
+        else:
+            print(bcolors.OKGREEN + f"Removed {amount_sold} from stock. You have {self.left_in_stock} {self.taste} juices left in stock" + bcolors.ENDC)
+            
+            
+    def add_to_stock(self):
+        amount_input = input("Add the amount: ")
+        self.left_in_stock = self.left_in_stock + int(amount_input)
+        
+        
+        print(bcolors.OKGREEN + f"Added {amount_input} to stock. You have {self.left_in_stock} {self.taste} juices in stock" + bcolors.ENDC)
+        
+        
+    def add_discount(self):
+        amount_input = input("Add the discount amount: ")
+        self.price = self.price - self.price * (int(amount_input)/100)
+        print(f"Succesfully added {amount_input} percent discount on {self.taste} juice. New price is: {self.price}")
+        
+    
+    def __str__(self):
+        if self.left_in_stock <= 0:
+            print(f"{self.taste} has no more item left in stock, refill it.. ")
+        return f"Name: {self.taste}\nColor: {self.color}\nPrice: {self.price}\nLeft in stock: {self.left_in_stock}\n"
+    
+        
+    @staticmethod    
+    def create_juice():
+        
+        add_name = input("Juice name: ")
+        add_color = input("Color attributes: ")
+        add_stock_amount = input("Amount in stock: ")
+        add_price = input("Add a price: ")
+        
+        juices_container[add_name] = Juices(add_name, add_color, int(add_stock_amount), int(add_price))
+        print(bcolors.OKGREEN + f"You have the following juices in store: {[i for i in juices_container.keys()]} " + bcolors.ENDC)
+ 
+juices_container = {"Orange with melon": Juices("Orange with melon", "Dark orange with melon stripes", 100, 1000),
+                    "Coco bomb": Juices("Coco bomb", "Snow white with chocoa stripes", 200, 2000)
+
+                    }
+
+
+while True: 
+
+    ask_user = input( bcolors.WARNING + """What do you want to do? \nQ = Quit,
+CR = Create Juice, MAN = Manage store and prices , PR = Print all items and parameters| """ + bcolors.ENDC)
+    
+    if ask_user == "Q":
+        break
+    
+    elif ask_user == "CR":
+        Juices.create_juice()
+        
+    elif ask_user == "MAN":
+        
+        for juice in juices_container.keys():
+            print(juice, end= " | ")
+            
+        choose_juice = input("\nPick your juice: ")
+        juice_picked = juices_container[choose_juice]
+        choose_action = input(f"""Choose action : 
+        \nAdd {choose_juice} items to stock - ADD   
+        \nRemove{choose_juice} items from stock - REM   
+        \nAdd discount to {choose_juice} - DIS   """)
+        
+        if choose_action == "ADD":
+            juice_picked.add_to_stock()
+            
+        elif choose_action == "REM":
+            juice_picked.remove_from_stock()
+            
+        elif choose_action == "DIS":
+            juice_picked.add_discount()
+            
+            
+    elif ask_user == "PR":
+        for item in juices_container.keys():
+            print(juices_container[item])
+            
